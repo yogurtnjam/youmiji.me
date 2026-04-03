@@ -1,25 +1,480 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>youmiji.me</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Youmi Ji</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f9f7f4;
+    --text: #1a1a1a;
+    --muted: #888;
+    --accent: #2a2a2a;
+    --border: #e0ddd8;
+    --hover: #4a4a4a;
+    --serif: 'EB Garamond', Georgia, serif;
+    --mono: 'DM Mono', monospace;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.75;
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 28px;
+    padding: 20px 48px;
+    background: var(--bg);
+    z-index: 100;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s;
+  }
+  nav a {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  nav a:hover { color: var(--text); }
+
+  /* MAIN CONTENT */
+  main {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 120px 32px 80px;
+  }
+
+  /* HERO */
+  .hero {
+    margin-bottom: 72px;
+    animation: fadeUp 0.6s ease both;
+  }
+  .hero-greeting {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 8px;
+    letter-spacing: 0.03em;
+  }
+  .hero-name {
+    font-size: 2.6rem;
+    font-weight: 500;
+    line-height: 1.15;
+    margin-bottom: 14px;
+    letter-spacing: -0.01em;
+  }
+  .hero-tagline {
+    font-size: 1.05rem;
+    color: var(--muted);
+    font-style: italic;
+    min-height: 1.75em;
+  }
+  .cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background: var(--muted);
+    margin-left: 2px;
+    vertical-align: text-bottom;
+    animation: blink 1s step-end infinite;
+  }
+
+  /* SECTION */
+  section {
+    margin-bottom: 56px;
+    animation: fadeUp 0.6s ease both;
+  }
+  section:nth-child(2) { animation-delay: 0.05s; }
+  section:nth-child(3) { animation-delay: 0.10s; }
+  section:nth-child(4) { animation-delay: 0.15s; }
+  section:nth-child(5) { animation-delay: 0.20s; }
+  section:nth-child(6) { animation-delay: 0.25s; }
+  section:nth-child(7) { animation-delay: 0.30s; }
+
+  .section-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ABOUT */
+  .about-text p {
+    margin-bottom: 1em;
+    color: #333;
+  }
+  .about-text p:last-child { margin-bottom: 0; }
+
+  /* EDUCATION */
+  .edu-item {
+    margin-bottom: 20px;
+  }
+  .edu-school {
+    font-weight: 500;
+    font-size: 1rem;
+  }
+  .edu-degree {
+    color: var(--muted);
+    font-size: 0.92rem;
+    font-style: italic;
+  }
+  .edu-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .edu-courses {
+    font-size: 0.88rem;
+    color: #666;
+    margin-top: 6px;
+  }
+
+  /* COLLAPSIBLE */
+  .collapsible-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0;
+  }
+  .collapsible-header:hover .section-title { color: var(--text); }
+  .toggle-btn {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    transition: color 0.2s;
+  }
+  .collapsible-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.3s ease;
+  }
+  .collapsible-content.open {
+    max-height: 2000px;
+    padding-top: 20px;
+  }
+
+  /* WORK / PROJECT / RESEARCH ITEMS */
+  .entry {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 4px 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .entry:first-child { border-top: none; }
+  .entry-name {
+    font-weight: 500;
+    font-size: 0.97rem;
+  }
+  .entry-role {
+    font-size: 0.88rem;
+    color: #555;
+    font-style: italic;
+  }
+  .entry-date {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+    grid-row: 1;
+    grid-column: 2;
+    align-self: start;
+    margin-top: 2px;
+  }
+  .entry-desc {
+    font-size: 0.88rem;
+    color: #666;
+    grid-column: 1 / -1;
+    margin-top: 2px;
+  }
+
+  /* HONORS */
+  .honors-list {
+    font-size: 0.92rem;
+    color: #444;
+    line-height: 2;
+  }
+  .honors-list .bullet {
+    display: inline-block;
+    margin: 0 6px;
+    color: var(--muted);
+  }
+
+  /* CONTACT */
+  .contact-text {
+    font-size: 0.95rem;
+    color: #444;
+  }
+  .contact-text a {
+    color: var(--text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--border);
+    transition: text-decoration-color 0.2s;
+  }
+  .contact-text a:hover { text-decoration-color: var(--text); }
+
+  /* FOOTER */
+  footer {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 32px 48px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+</style>
 </head>
 <body>
-    <h1>Welcome to youmiji.me</h1>
-    <p>This is a webpage.</p>
 
-    <h2>Fun facts about me</h2>
-    <ul>
-        <li>I was born in China but lived in Japan for 7 years</li>
-        <li>I have a cat named “Natto” (like the Japanese fermented beans)</li>
-        <li>I'm a sophomore intending to major in CS and Math</li>
-        <li>I love oranges</li>
-    </ul>
+<nav>
+  <a href="/">Home</a>
+  <a href="#">Blog</a>
+  <a href="#">Photography</a>
+  <a href="#">Readings</a>
+</nav>
 
-    <img 
-        src="https://preview.redd.it/a-cat-obsessed-with-code-v0-cscninz8g3bb1.jpg?auto=webp&s=14cce2cad380243bbb438867affe533de46dddeb" 
-        alt="A cat obsessed with code"
-        width="400"
-    >
+<main>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-greeting">Hi</div>
+    <div class="hero-name">I'm Youmi Ji.</div>
+    <div class="hero-tagline" id="tagline"><span class="cursor"></span></div>
+  </div>
+
+  <!-- ABOUT -->
+  <section>
+    <div class="section-title">About</div>
+    <div class="about-text">
+      <p>I'm a first-year at Dartmouth College studying Computer Science. My research interests sit at the intersection of natural language processing, cognitive science, and the way language shapes — and is shaped by — the societies that speak it. There's something endlessly fascinating to me about the fact that a word can carry centuries of cultural memory inside it.</p>
+      <p>I grew up moving between China and Japan, which means I've spent my whole life living at the seam between cultures. That instilled an obsession with translation — not just between languages, but between ways of thinking. Now I find myself drawn to questions like: what gets lost when a dialect disappears? What does a neural network actually "learn" about meaning? How does social media accelerate or flatten cultural drift?</p>
+      <p>Outside research, I spend time on fashion and aesthetics, competitive puzzle math, gaming, writing, and analyzing how trends propagate on social platforms. I have a cat named Natto. I eat too many oranges.</p>
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section>
+    <div class="section-title">Education</div>
+    <div class="edu-item">
+      <div class="edu-school">Dartmouth College</div>
+      <div class="edu-degree">Bachelor of Arts in Computer Science</div>
+      <div class="edu-meta">Sep 2024 – Jun 2028 · GPA: 3.90</div>
+      <div class="edu-courses">CS 1 · CS 10 · CS 30 · CS 50 · CS 52 · CS 67 · CS 70 · CS 89 · MATH 8 · MATH 13 · QSS 15</div>
+    </div>
+    <div class="edu-item">
+      <div class="edu-school">International School of the Sacred Heart, Tokyo</div>
+      <div class="edu-degree">High School Diploma</div>
+      <div class="edu-meta">Graduated Jun 2024</div>
+    </div>
+  </section>
+
+  <!-- WORK EXPERIENCE -->
+  <section>
+    <div class="collapsible-header" onclick="toggle(this)">
+      <div class="section-title" style="border:none; margin:0; padding:0;">Work Experience</div>
+      <div class="toggle-btn">Show Details ∨</div>
+    </div>
+    <div class="collapsible-content">
+      <div class="entry">
+        <div class="entry-name">Dartmouth URAD</div>
+        <div class="entry-date">2025 – present</div>
+        <div class="entry-role">Research Intern</div>
+        <div class="entry-desc">Investigating causal inference methods for A/B experiment optimization in social contexts.</div>
+      </div>
+      <div class="entry">
+        <div class="entry-name">SINC</div>
+        <div class="entry-date">2024 – 2025</div>
+        <div class="entry-role">Technology Consultant</div>
+        <div class="entry-desc">Advising student organizations on software tooling, workflow automation, and data practices.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section>
+    <div class="collapsible-header" onclick="toggle(this)">
+      <div class="section-title" style="border:none; margin:0; padding:0;">Projects</div>
+      <div class="toggle-btn">Show Details ∨</div>
+    </div>
+    <div class="collapsible-content">
+      <div class="entry">
+        <div class="entry-name">Nüshu Sentiment Analysis</div>
+        <div class="entry-date">2025</div>
+        <div class="entry-desc">— NLP study of emotional valence in Nüshu script texts, a rare women-only writing system from Hunan.</div>
+      </div>
+      <div class="entry">
+        <div class="entry-name">Causal Inference Framework</div>
+        <div class="entry-date">2025</div>
+        <div class="entry-desc">— Experiment design framework for optimizing A/B tests using observational causal graphs.</div>
+      </div>
+      <div class="entry">
+        <div class="entry-name">Filmit</div>
+        <div class="entry-date">2024</div>
+        <div class="entry-desc">— YC Hackathon project; short-form video recommendation engine using implicit preference signals.</div>
+      </div>
+      <div class="entry">
+        <div class="entry-name">Ophthalmos</div>
+        <div class="entry-date">2024</div>
+        <div class="entry-desc">— CS67 HCI project; an eye-tracking interface prototype designed for low-motor accessibility.</div>
+      </div>
+      <div class="entry">
+        <div class="entry-name">Boardwalk</div>
+        <div class="entry-date">2024</div>
+        <div class="entry-desc">— CS52 full-stack web app for collaborative community boards with real-time updates.</div>
+      </div>
+      <div class="entry">
+        <div class="entry-name">Nugget Game</div>
+        <div class="entry-date">2024</div>
+        <div class="entry-desc">— CS50 software design project; a logic puzzle game built around combinatorial word sets.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESEARCH -->
+  <section>
+    <div class="collapsible-header" onclick="toggle(this)">
+      <div class="section-title" style="border:none; margin:0; padding:0;">Research &amp; Writing</div>
+      <div class="toggle-btn">Show Details ∨</div>
+    </div>
+    <div class="collapsible-content">
+      <div class="entry">
+        <div class="entry-name">Sentiment Patterns in Nüshu Script</div>
+        <div class="entry-date">2025</div>
+        <div class="entry-desc">— Undergraduate research applying transformer-based NLP to an endangered logographic system.</div>
+      </div>
+      <div class="entry">
+        <div class="entry-name">Causal Structures in Online Discourse</div>
+        <div class="entry-date">2025</div>
+        <div class="entry-desc">— Ongoing URAD paper on information diffusion networks and counterfactual framing.</div>
+      </div>
+      <div class="entry">
+        <div class="entry-name">Why Dialects Die (And Why They Shouldn't)</div>
+        <div class="entry-date">2024</div>
+        <div class="entry-desc">— Essay on linguistic loss, identity, and the politics of standardization.</div>
+      </div>
+      <div class="entry">
+        <div class="entry-name">The Aesthetics of the Algorithm</div>
+        <div class="entry-date">2024</div>
+        <div class="entry-desc">— On how recommendation systems are quietly reshaping fashion and cultural taste.</div>
+      </div>
+      <div class="entry">
+        <div class="entry-name">Living Between Languages</div>
+        <div class="entry-date">2024</div>
+        <div class="entry-desc">— Personal essay on code-switching, identity, and what it means to belong to multiple cultures.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HONORS -->
+  <section>
+    <div class="collapsible-header" onclick="toggle(this)">
+      <div class="section-title" style="border:none; margin:0; padding:0;">Honors</div>
+      <div class="toggle-btn">Show Details ∨</div>
+    </div>
+    <div class="collapsible-content">
+      <div class="honors-list">
+        YC Hackathon Top 6
+        <span class="bullet">·</span>
+        Dartmouth Dean's List
+        <span class="bullet">·</span>
+        National High School Math Olympiad Finalist
+        <span class="bullet">·</span>
+        URAD Research Grant
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section>
+    <div class="section-title">Contact</div>
+    <div class="contact-text">
+      I love meeting people — please don't hesitate to reach out.
+      <br>
+      <a href="mailto:youmi.ji.28@dartmouth.edu">youmi.ji.28 [at] dartmouth [dot] edu</a>
+    </div>
+  </section>
+
+</main>
+
+<footer>© 2026 Youmi Ji. All rights reserved.</footer>
+
+<script>
+  // Typewriter effect
+  const taglineEl = document.getElementById('tagline');
+  const lines = [
+    'I study CS at Dartmouth.',
+    'Born in China, raised in Japan.',
+    'Obsessed with how culture and technology collide.',
+  ];
+  let lineIdx = 0, charIdx = 0, deleting = false;
+
+  function type() {
+    const line = lines[lineIdx];
+    const cursor = '<span class="cursor"></span>';
+    if (!deleting) {
+      charIdx++;
+      taglineEl.innerHTML = line.slice(0, charIdx) + cursor;
+      if (charIdx === line.length) {
+        if (lineIdx === lines.length - 1) return;
+        deleting = true;
+        setTimeout(type, 1400);
+        return;
+      }
+    } else {
+      charIdx--;
+      taglineEl.innerHTML = line.slice(0, charIdx) + cursor;
+      if (charIdx === 0) {
+        deleting = false;
+        lineIdx = (lineIdx + 1) % lines.length;
+        setTimeout(type, 400);
+        return;
+      }
+    }
+    setTimeout(type, deleting ? 28 : 52);
+  }
+  setTimeout(type, 700);
+
+  // Collapsible toggle
+  function toggle(header) {
+    const content = header.nextElementSibling;
+    const btn = header.querySelector('.toggle-btn');
+    const open = content.classList.toggle('open');
+    btn.textContent = open ? 'Hide Details ∧' : 'Show Details ∨';
+  }
+</script>
 </body>
 </html>
-
